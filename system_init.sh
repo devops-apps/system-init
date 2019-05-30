@@ -8,8 +8,6 @@
 # Date: 2019.5.28
 ################################################################
 
-
-
 # Variable settings
 PATH=/bin:/sbin:/usr/bin:/usr/sbin && export PATH
 ETH0=ifcfg-ens192
@@ -23,7 +21,6 @@ NAMESERVER2=10.10.10.31
 
 
 [ `id -u` -ne 0  ] && echo "The user no permission exec the scripts, Please use root is exec it..." && exit 0
-
 
 read -p "Do you want Initialize the system of your system, please make sure the operation? please input [y/n]:" INPUT
 
