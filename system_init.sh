@@ -32,7 +32,7 @@ if [ "$INPUT" = "y" ]; then
 
 
 ######### Install basic tools of system #########
-yum install \
+sudo yum install \
 net-tools bind-utils vim \
 lvm2 gcc gcc-c++ wget make automake \
 pcre pcre-devel openssl openssl-devel zlib zlib-devel bios-devel -y >>/dev/null 2>&1
@@ -42,32 +42,32 @@ echo "INFO: Install basic tools successd of system ..."
 
 ######### basic configure of system #########
 echo -n "" /etc/hostname
-sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
-sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
+sudo sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
+sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
 echo -e "$HOSTNAME" > /etc/hostname
-sed -i "/HOSTNAME/d"  /etc/hosts
+sduo sed -i "/HOSTNAME/d"  /etc/hosts
 echo -e "$ETH1_IP $HOSTNAME" > /etc/hosts
 echo ".........................................................................."
 echo "INFO: Basic configure of system is success ..."
 
 
 ######### Change yum mirros images for system #########
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo >>/dev/null 2>&1
-yum clean all  >>/dev/null 2>&1
-yum makecache  >>/dev/null 2>&1
+sudo mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
+sudo wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo >>/dev/null 2>&1
+sudo yum clean all  >>/dev/null 2>&1
+sudo yum makecache  >>/dev/null 2>&1
 echo ".........................................................................."
 echo "INFO: Changed the mirros success of yum ..."
 
 
 ######### Change interface name for network #########
-sed -e "s:centos/swap rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
-grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
+sudo sed -i "s:centos/swap rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
-mv $ETH0 ifcfg-eth0
-mv $ETH1 ifcfg-eth1
+sudo mv $ETH0 ifcfg-eth0
+sudo mv $ETH1 ifcfg-eth1
 
 # Configure ip info of eth0
 cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
