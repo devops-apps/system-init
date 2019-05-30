@@ -41,7 +41,6 @@ echo "INFO: Install basic tools successd of system ..."
 
 
 ######### basic configure of system #########
-echo -n "" /etc/resolv.conf
 echo -n "" /etc/hostname
 sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
 sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
