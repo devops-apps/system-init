@@ -46,8 +46,8 @@ sudo sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
-echo -e "$HOSTNAME" > /etc/hostname
-sduo sed -i "/HOSTNAME/d"  /etc/hosts
+echo -e "$HOSTNAME" > /etc/hostname >>/dev/null 2>&1
+sudo sed -i "/HOSTNAME/d"  /etc/hosts 
 echo -e "$ETH1_IP $HOSTNAME" > /etc/hosts
 echo ".........................................................................."
 echo "INFO: Basic configure of system is success ..."
@@ -66,8 +66,9 @@ echo "INFO: Changed the mirros success of yum ..."
 sudo sed -i "s:centos/swap rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
-sudo mv $ETH0 ifcfg-eth0
-sudo mv $ETH1 ifcfg-eth1
+sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
+sudo mv $ETH1 ifcfg-eth1  >>/var/log/init.log 2>&1
+
 
 # Configure ip info of eth0
 cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
@@ -82,7 +83,7 @@ echo -e "IPADDR=$ETH0_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth0
 echo -e "GATEWAY=$GATEWAY"   >>/etc/sysconfig/network-scripts/ifcfg-eth0
 
 # Configure ip info of eth1
-cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+cat >/etc/sysconfig/network-scripts/ifcfg-eth1 <<EOF
 OTPROTO=static
 DEFROUTE=yes
 NAME=eth1
@@ -90,7 +91,7 @@ DEVICE=eth1
 ONBOOT=yes
 PREFIX=24
 EOF
-echo -e "IPADDR=$ETH1_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth001
+echo -e "IPADDR=$ETH1_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth1
 echo ".........................................................................."
 echo "INFO: Successful named network interface of system ..."
 
