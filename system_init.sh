@@ -60,7 +60,8 @@ echo "INFO: Changed the mirros success of yum ..."
 
 
 ######### Change interface name for network #########
-sudo sed -i "s:centos/swap rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
+sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
+sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
 sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
