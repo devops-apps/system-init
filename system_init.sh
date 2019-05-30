@@ -47,7 +47,7 @@ sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
 echo -e "$HOSTNAME" > /etc/hostname
-sudo sed -i "/HOSTNAME/d"  /etc/hosts 
+sudo sed -i "/$HOSTNAME/d"  /etc/hosts 
 echo -e "$ETH1_IP $HOSTNAME" > /etc/hosts
 echo ".........................................................................."
 echo "INFO: Basic configure of system is success ..."
