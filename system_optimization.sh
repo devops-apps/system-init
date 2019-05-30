@@ -91,11 +91,11 @@ read -p "Do you want mount the disk, please input [y/n]:" ANSWER
 if [ "$ANSWER" = "y" ]; then
      sudo cp -f /etc/fstab /etc/fstab.bak
      if [ "$MEM_STATUS" = "Swap" ]; then
-          sudo sed -i  "\/dev\/${DISK_NAME}1 /d" /etc/fstab
+          sudo sed -i  '\/dev\/$"{DISK_NAME}"1 /d' /etc/fstab
           sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
           echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
      else
-          sudo sed -i  "\/dev\/${DISK_NAME}1 /d" /etc/fstab
+          sudo sed -i  '\/dev\/$"{DISK_NAME}"1 /d' /etc/fstab
           sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
           echo -e "/dev/${DISK_NAME}1               swap                    swap    defaults    0 0" >> /etc/fstab
           echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
@@ -130,7 +130,7 @@ else
      sudo chmod 0700 $SSH_DEVOPS
      sudo chmod 0600 $SSH_DEVOPS/authorized_keys
 fi
-echo "INFO:initializes the server system success!"
+echo "INFO: Initializes the server system success!"
 echo ".........................................................................."
 
 #Add sudo permissions to devops in /etc/sudoers file .
