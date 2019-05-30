@@ -17,6 +17,9 @@ ETH1=ifcfg-ens224
 ETH0_IP=192.168.20.100
 ETH1_IP=10.10.10.100
 GATEWAY=192.168.20.1
+HOSTNAME=test.template.com
+NAMESERVER1=10.10.10.30
+NAMESERVER2=10.10.10.31
 
 
 [ `id -u` -ne 0  ] && echo "The user no permission exec the scripts, Please use root is exec it..." && exit 0
@@ -35,6 +38,21 @@ lvm2 gcc gcc-c++ wget make automake \
 pcre pcre-devel openssl openssl-devel zlib zlib-devel bios-devel -y >>/dev/null 2>&1
 echo ".........................................................................."
 echo "INFO: Install basic tools successd of system ..."
+
+
+######### basic configure of system #########
+echo -n "" /etc/resolv.conf
+echo -n "" /etc/hostname
+sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
+sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
+echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
+echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
+echo -e "$HOSTNAME" > /etc/hostname
+sed -i "/HOSTNAME/d"  /etc/hosts
+echo -e "$ETH1_IP $HOSTNAME" > /etc/hosts
+echo ".........................................................................."
+echo "INFO: Basic configure of system is success ..."
+
 
 ######### Change yum mirros images for system #########
 mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
