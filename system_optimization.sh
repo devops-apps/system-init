@@ -90,10 +90,16 @@ fi
 read -p "Do you want mount the disk, please input [y/n]:" ANSWER
 if [ "$ANSWER" = "y" ]; then
      sudo cp -f /etc/fstab /etc/fstab.bak
-     sudo sed -i  '\/dev\/vdb1 /d' /etc/fstab
-     sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
-     echo -e "/dev/vdb1               swap                    swap    defaults    0 0" >> /etc/fstab
-     echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
+     if [ "$MEM_STATUS" = "Swap" ]; then
+          sudo sed -i  "\/dev\/${DISK_NAME}1 /d" /etc/fstab
+          sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
+          echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
+     else
+          sudo sed -i  "\/dev\/${DISK_NAME}1 /d" /etc/fstab
+          sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
+          echo -e "/dev/${DISK_NAME}1               swap                    swap    defaults    0 0" >> /etc/fstab
+          echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
+     fi
      echo "INFO: The partitions is mount success..."
      echo ".........................................................................."
 fi
