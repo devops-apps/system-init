@@ -122,6 +122,10 @@ fi
 #devops
 if [ -d $SSH_DEVOPS ]; then
      echo "the gamaxwin ssh public key is already create..."  >>/dev/null 2>&1
+	 sudo -u $USER_DEVOPS -H echo -e "$KEY" > $SSH_DEVOPS/authorized_keys
+	 sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
+     sudo chmod 0700 $SSH_DEVOPS
+     sudo chmod 0600 $SSH_DEVOPS/authorized_keys
      echo ".........................................................................."
 else
      sudo -u $USER_DEVOPS -H mkdir $SSH_DEVOPS

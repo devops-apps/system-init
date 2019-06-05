@@ -17,7 +17,8 @@ ETH1_IP=10.10.10.100
 GATEWAY=192.168.20.1
 HOSTNAME=test.template.com
 NAMESERVER1=10.10.10.30
-NAMESERVER2=10.10.10.31
+NAMESERVER2=10.10.10.31 
+INTERFACE_NUM=$(ls /etc/sysconfig/network-scripts/ifcfg-e* | wc -l)
 
 
 [ `id -u` -ne 0  ] && echo "The user no permission exec the scripts, Please use root is exec it..." && exit 0
@@ -26,7 +27,6 @@ read -p "Do you want Initialize the system of your system, please make sure the 
 
 #./start
 if [ "$INPUT" = "y" ]; then
-
 
 ######### Install basic tools of system #########
 sudo yum install \
@@ -58,6 +58,28 @@ sudo yum makecache  >>/dev/null 2>&1
 echo ".........................................................................."
 echo "INFO: Changed the mirros success of yum ..."
 
+if [ "$INTERFACE_NUM" -eq  "1"]; then
+
+######### Change interface name for network #########
+sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
+sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
+cd /etc/sysconfig/network-scripts/
+sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
+
+# Configure ip info of eth0
+cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<"EOF"
+OTPROTO=static
+DEFROUTE=yes
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+PREFIX=24
+IPADDR=${ETH0_IP}
+GATEWAY=${GATEWAY}
+EOF
+
+else
 
 ######### Change interface name for network #########
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
@@ -66,7 +88,6 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
 sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
 sudo mv $ETH1 ifcfg-eth1  >>/var/log/init.log 2>&1
-
 
 # Configure ip info of eth0
 cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
@@ -92,7 +113,7 @@ EOF
 echo -e "IPADDR=$ETH1_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth1
 echo ".........................................................................."
 echo "INFO: Successful named network interface of system ..."
-
+fi
 
 ######### Reboot server system #########
 read -p "Initializes system success!, But it is need reboot now, please input [y/n]:" ID
