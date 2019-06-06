@@ -59,7 +59,7 @@ sudo yum makecache  >>/dev/null 2>&1
 echo ".........................................................................."
 echo "INFO: Changed the mirros success of yum ..."
 
-if [ "$INTERFACE_NUM" -eq  "1"]; then
+if [ $INTERFACE_NUM == 1 ]; then
 ######### Change interface name for network #########
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
 sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
@@ -78,9 +78,9 @@ PREFIX=24
 IPADDR=${ETH0_IP}
 GATEWAY=${GATEWAY}
 EOF
+fi
 
-else
-
+if [ $INTERFACE_NUM == 2 ]; then
 ######### Change interface name for network #########
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
 sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
@@ -97,9 +97,9 @@ NAME=eth0
 DEVICE=eth0
 ONBOOT=yes
 PREFIX=24
+IPADDR=${ETH0_IP}
+GATEWAY=${GATEWAY}
 EOF
-echo -e "IPADDR=$ETH0_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth0
-echo -e "GATEWAY=$GATEWAY"   >>/etc/sysconfig/network-scripts/ifcfg-eth0
 
 # Configure ip info of eth1
 cat >/etc/sysconfig/network-scripts/ifcfg-eth1 <<EOF
@@ -109,8 +109,8 @@ NAME=eth1
 DEVICE=eth1
 ONBOOT=yes
 PREFIX=24
+IPADDR=${ETH1_IP}
 EOF
-echo -e "IPADDR=$ETH1_IP"   >>/etc/sysconfig/network-scripts/ifcfg-eth1
 echo ".........................................................................."
 echo "INFO: Successful named network interface of system ..."
 fi
