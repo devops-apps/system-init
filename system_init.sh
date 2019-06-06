@@ -53,13 +53,13 @@ echo "INFO: Basic configure of system is success ..."
 ######### Change yum mirros images for system #########
 sudo mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 sudo wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo >>/dev/null 2>&1
+yum install -y epel-release  >>/dev/null 2>&1
 sudo yum clean all  >>/dev/null 2>&1
 sudo yum makecache  >>/dev/null 2>&1
 echo ".........................................................................."
 echo "INFO: Changed the mirros success of yum ..."
 
 if [ "$INTERFACE_NUM" -eq  "1"]; then
-
 ######### Change interface name for network #########
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
 sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
