@@ -65,7 +65,7 @@ sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub
 sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
-sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
+sudo mv $ETH0 ifcfg-eth0  >>/tmp/init.log 2>&1
 
 # Configure ip info of eth0
 cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<"EOF"
@@ -86,8 +86,8 @@ sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub
 sudo sed -i "s:centos/swap:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
-sudo mv $ETH0 ifcfg-eth0  >>/var/log/init.log 2>&1
-sudo mv $ETH1 ifcfg-eth1  >>/var/log/init.log 2>&1
+sudo mv $ETH0 ifcfg-eth0  >>/tmp/init.log 2>&1
+sudo mv $ETH1 ifcfg-eth1  >>/tmp/init.log 2>&1
 
 # Configure ip info of eth0
 cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
