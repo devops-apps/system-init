@@ -156,12 +156,13 @@ sudo sed -i  "/AllowUsers $USER_DEVOPS/d"  /etc/ssh/sshd_config
 sudo sed -i  "/^PasswordAuthentication yes/a\\AllowUsers $USER_DEVOPS"  /etc/ssh/sshd_config
 sudo service sshd reload  >>/dev/null 2>&1
 
-# Close Selinux and Iptables and ipv6
+# Close Selinux and Iptables
 systemctl stop firewalld.service >>/dev/null 2>&1
 systemctl disable firewalld.service >>/dev/null 2>&1
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 setenforce 0 >>/dev/null 2>&1
-sed -i "s:centos/swap rhgb:& ipv6.disable=1 :" /etc/sysconfig/grub 
+sudo sed -i "s:ipv6.disable=1::" /etc/sysconfig/grub 
+sed -i "s:centos/swap rhgb:& ipv6.disable=1:" /etc/sysconfig/grub 
 grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 
 
