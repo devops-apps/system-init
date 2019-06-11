@@ -30,7 +30,7 @@ if [ "$INPUT" = "y" ]; then
 
 ######### Install basic tools of system #########
 sudo yum install \
-net-tools bind-utils vim \
+net-tools bind-utils vim telnet \
 lvm2 gcc gcc-c++ wget make automake \
 pcre pcre-devel openssl openssl-devel zlib zlib-devel bios-devel -y >>/dev/null 2>&1
 echo ".........................................................................."
