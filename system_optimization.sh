@@ -115,7 +115,7 @@ if [ -d $SSH_DEVOPS ]; then
      echo "the devops user is already create..."  >>/dev/null 2>&1
 else
      groupadd $USER_DEVOPS
-     useradd -g $USER_DEVOPS $USER_DEVOPS
+     useradd -g $USER_DEVOPS -c "DevOps User" $USER_DEVOPS
 fi
 
 #Add ssh Public Key.
