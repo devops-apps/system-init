@@ -61,6 +61,7 @@ echo "INFO: Changed the mirros success of yum ..."
 
 if [ $INTERFACE_NUM == 1 ]; then
 ######### Change interface name for network #########
+sudo cp /etc/default/grub{,.bak}
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
 sudo sed -i "s:centos/swap rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
