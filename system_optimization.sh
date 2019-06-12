@@ -162,7 +162,7 @@ systemctl disable firewalld.service >>/dev/null 2>&1
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 setenforce 0 >>/dev/null 2>&1
 sudo sed -i "s:ipv6.disable=1::" /etc/sysconfig/grub 
-sed -i "s:centos/swap rhgb:& ipv6.disable=1:" /etc/sysconfig/grub 
+sed -i "s:centos/swap  rhgb:& ipv6.disable=1:" /etc/sysconfig/grub 
 grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 
 
