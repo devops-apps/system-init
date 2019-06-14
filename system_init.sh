@@ -38,11 +38,12 @@ echo "INFO: Install basic tools successd of system ..."
 
 
 ######### basic configure of system #########
-sudo true > /etc/hostname
+
 sudo sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
+sudo true > /etc/hostname
 echo -e "$HOSTNAME" > /etc/hostname
 sudo sed -i "/$HOSTNAME/d"  /etc/hosts 
 echo -e "$ETH1_IP $HOSTNAME" >> /etc/hosts
