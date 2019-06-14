@@ -18,7 +18,7 @@ USER_DEVOPS=gamaxwin
 SSH_DEVOPS=/home/${USER_DEVOPS}/.ssh
 DATA=/data
 DISK_NAME=/dev/sdb
-KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops user"
+DEVOPS_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops user"
 MEM_STATUS=$(free -m | grep Swap | awk -F ":" '{print $1}')
 DISK_STATUS=$(ls -l ${DISK_NAME}* | wc -l)
 
@@ -118,23 +118,23 @@ else
      useradd -g $USER_DEVOPS -c "DevOps User" $USER_DEVOPS
 fi
 
-#Add ssh Public Key.
+#Add ssh Public DEVOPS_KEY.
 #devops
 if [ -d $SSH_DEVOPS ]; then
-     echo "the gamaxwin ssh public key is already create..."  >>/dev/null 2>&1
-     sudo -i "/$KEY/d" $SSH_DEVOPS/authorized_keys
-     sudo -u $USER_DEVOPS -H echo -e "$KEY" >> $SSH_DEVOPS/authorized_keys
+     echo "the gamaxwin ssh public DEVOPS_KEY is already create..."  >>/dev/null 2>&1
+     sudo -i "/devops user/d" $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" >> $SSH_DEVOPS/authorized_DEVOPS_KEYs
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
-     sudo chmod 0600 $SSH_DEVOPS/authorized_keys
+     sudo chmod 0600 $SSH_DEVOPS/authorized_DEVOPS_KEYs
      echo ".........................................................................."
 else
      sudo -u $USER_DEVOPS -H mkdir $SSH_DEVOPS
-     sudo -i "/$KEY/d" $SSH_DEVOPS/authorized_keys
-     sudo -u $USER_DEVOPS -H echo -e "$KEY" > $SSH_DEVOPS/authorized_keys
+     sudo -i "/devops user/d" $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" > $SSH_DEVOPS/authorized_DEVOPS_KEYs
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
-     sudo chmod 0600 $SSH_DEVOPS/authorized_keys
+     sudo chmod 0600 $SSH_DEVOPS/authorized_DEVOPS_KEYs
 fi
 echo "INFO: Initializes the server system success!"
 echo ".........................................................................."
@@ -148,11 +148,11 @@ sudo sed -i  "/secure_path/s:\:/usr/local.*::" /etc/sudoers
 sudo sed -i  "/secure_path/s:\:/usr/bin:\:/usr/bin\:/usr/local/bin\:/usr/local/sbin:" /etc/sudoers
 sudo sed -i  "/## Allow root to run any commands anywhere/a\\$USER_DEVOPS        ALL=(ALL)       NOPASSWD: ALL"  /etc/sudoers
 
-#Configure SSH server and client to use EFS logon while Public Key Authentication.
+#Configure SSH server and client to use EFS logon while Public DEVOPS_KEY Authentication.
 sudo sed -i  "/Port 8989/s/^Port 8989/Port $PORT/g"  /etc/ssh/sshd_config
 sudo sed -i  '/#RSAAuthentication yes/s/^#RSAAuthentication yes/RSAAuthentication yes/g'  /etc/ssh/sshd_config
-sudo sed -i '/#PubkeyAuthentication yes/s/^#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
-sudo sed -i "/#AuthorizedKeysFile/s/^#//g" /etc/ssh/sshd_config
+sudo sed -i '/#PubDEVOPS_KEYAuthentication yes/s/^#PubDEVOPS_KEYAuthentication yes/PubDEVOPS_KEYAuthentication yes/g' /etc/ssh/sshd_config
+sudo sed -i "/#AuthorizedDEVOPS_KEYsFile/s/^#//g" /etc/ssh/sshd_config
 sudo sed -i "/PermitRootLogin yes/s/yes/no/g" /etc/ssh/sshd_config
 sudo sed -i  "/AllowUsers $USER_DEVOPS/d"  /etc/ssh/sshd_config
 sudo sed -i  "/^PasswordAuthentication yes/a\\AllowUsers $USER_DEVOPS"  /etc/ssh/sshd_config
