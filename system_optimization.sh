@@ -153,7 +153,7 @@ sudo sed -i  "/Port 8989/s/^Port 8989/Port $PORT/g"  /etc/ssh/sshd_config
 sudo sed -i  '/#RSAAuthentication yes/s/^#RSAAuthentication yes/RSAAuthentication yes/g'  /etc/ssh/sshd_config
 sudo sed -i '/#PubDEVOPS_KEYAuthentication yes/s/^#PubDEVOPS_KEYAuthentication yes/PubDEVOPS_KEYAuthentication yes/g' /etc/ssh/sshd_config
 sudo sed -i "/#AuthorizedDEVOPS_KEYsFile/s/^#//g" /etc/ssh/sshd_config
-sudo sed -i "/PermitRootLogin yes/s/yes/no/g" /etc/ssh/sshd_config
+sudo sed -i "/#PermitRootLogin yes/s/^#PermitRootLogin yes/PermitRootLogin no/g" /etc/ssh/sshd_config
 sudo sed -i  "/AllowUsers $USER_DEVOPS/d"  /etc/ssh/sshd_config
 sudo sed -i  "/^PasswordAuthentication yes/a\\AllowUsers $USER_DEVOPS"  /etc/ssh/sshd_config
 sudo service sshd reload  >>/dev/null 2>&1
