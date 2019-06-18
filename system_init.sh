@@ -15,7 +15,7 @@ ETH1=ifcfg-ens224
 ETH0_IP=192.168.20.100
 ETH1_IP=10.10.10.100
 GATEWAY=192.168.20.1
-HOSTNAME=test.template.com
+HOSTNAME=example.template.com
 NAMESERVER1=10.10.10.30
 NAMESERVER2=10.10.10.31 
 INTERFACE_NUM=$(ls /etc/sysconfig/network-scripts/ifcfg-e* | wc -l)
@@ -30,7 +30,7 @@ if [ "$INPUT" = "y" ]; then
 
 ######### Install basic tools of system #########
 sudo yum install \
-net-tools bind-utils vim telnet \
+net-tools bind-utils vim telnet rsync \
 lvm2 gcc gcc-c++ wget make automake \
 pcre pcre-devel openssl openssl-devel zlib zlib-devel bios-devel -y >>/dev/null 2>&1
 echo ".........................................................................."
@@ -70,7 +70,7 @@ cd /etc/sysconfig/network-scripts/
 sudo mv $ETH0 ifcfg-eth0  >>/tmp/init.log 2>&1
 
 # Configure ip info of eth0
-cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<"EOF"
+cat >/etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
 OTPROTO=static
 DEFROUTE=yes
 NAME=eth0

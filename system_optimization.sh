@@ -13,12 +13,13 @@
 # Variable settings
 PATH=/bin:/sbin:/usr/bin:/usr/sbin && export PATH
 SIZE=8G
-PORT=8989
-USER_DEVOPS=gamaxwin
+SRC_PORT=22
+DEST_PORT=60022
+USER_DEVOPS=devops
 SSH_DEVOPS=/home/${USER_DEVOPS}/.ssh
 DATA=/data
 DISK_NAME=/dev/sdb
-DEVOPS_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops user"
+DEVOPS_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops-user"
 MEM_STATUS=$(free -m | grep Swap | awk -F ":" '{print $1}')
 DISK_STATUS=$(ls -l ${DISK_NAME}* | wc -l)
 
@@ -91,7 +92,6 @@ read -p "Do you want mount the disk, please input [y/n]:" ANSWER
 if [ "$ANSWER" = "y" ]; then
      sudo cp -f /etc/fstab /etc/fstab.bak
      if [ "$MEM_STATUS" = "Swap" ]; then
-          sudo sed -i  '\/dev\/$"{DISK_NAME}"1 /d' /etc/fstab
           sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
           echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
      else
@@ -122,19 +122,19 @@ fi
 #devops
 if [ -d $SSH_DEVOPS ]; then
      echo "the gamaxwin ssh public DEVOPS_KEY is already create..."  >>/dev/null 2>&1
-     sudo -i "/devops user/d" $SSH_DEVOPS/authorized_DEVOPS_KEYs
-     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" >> $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo sed -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
+     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" >> $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
-     sudo chmod 0600 $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo chmod 0600 $SSH_DEVOPS/authorized_keys
      echo ".........................................................................."
 else
      sudo -u $USER_DEVOPS -H mkdir $SSH_DEVOPS
-     sudo -i "/devops user/d" $SSH_DEVOPS/authorized_DEVOPS_KEYs
-     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" > $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
+     sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" > $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
-     sudo chmod 0600 $SSH_DEVOPS/authorized_DEVOPS_KEYs
+     sudo chmod 0600 $SSH_DEVOPS/authorized_keys
 fi
 echo "INFO: Initializes the server system success!"
 echo ".........................................................................."
