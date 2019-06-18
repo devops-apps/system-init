@@ -149,7 +149,7 @@ sudo sed -i  "/secure_path/s:\:/usr/bin:\:/usr/bin\:/usr/local/bin\:/usr/local/s
 sudo sed -i  "/## Allow root to run any commands anywhere/a\\$USER_DEVOPS        ALL=(ALL)       NOPASSWD: ALL"  /etc/sudoers
 
 #Configure SSH server and client to use EFS logon while Public DEVOPS_KEY Authentication.
-sudo sed -i  "/Port 8989/s/^Port 8989/Port $PORT/g"  /etc/ssh/sshd_config
+sudo sed -i  "/#Port ${SRC_PORT}/s/^#Port ${SRC_PORT}/Port ${DEST_PORT}/g"  /etc/ssh/sshd_config
 sudo sed -i  '/#RSAAuthentication yes/s/^#RSAAuthentication yes/RSAAuthentication yes/g'  /etc/ssh/sshd_config
 sudo sed -i '/#PubDEVOPS_KEYAuthentication yes/s/^#PubDEVOPS_KEYAuthentication yes/PubDEVOPS_KEYAuthentication yes/g' /etc/ssh/sshd_config
 sudo sed -i "/#AuthorizedDEVOPS_KEYsFile/s/^#//g" /etc/ssh/sshd_config
