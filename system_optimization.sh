@@ -20,7 +20,7 @@ SSH_DEVOPS=/home/${USER_DEVOPS}/.ssh
 DATA=/data
 DISK_NAME=/dev/sdb
 DEVOPS_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops-user"
-MEM_STATUS=$(free -m | grep Swap | awk -F ":" '{print $1}')
+MEM_STATUS=$(free -m | grep Swap | awk -F " " '{print $2}')
 DISK_STATUS=$(ls -l ${DISK_NAME}* | wc -l)
 
 
@@ -40,7 +40,7 @@ if [ "$INPUT" = "y" ]; then
           #install lvm2 tools
           yum install lvm2 -y  >>/dev/null 2>&1
           #create swap  partition
-          if [ "$MEM_STATUS" = "Swap" ]; then
+          if [ "$MEM_STATUS" -gt 0 ]; then
                echo ".........................................................................."
 	       echo -e "INFO: The swap memory of system has already add... Don't Repeat to add !"
                echo ".........................................................................."
@@ -57,9 +57,9 @@ if [ "$INPUT" = "y" ]; then
                echo ".........................................................................."
           else
                echo -ne "n\np\n1\n\n+$SIZE\nt\n\n82\nw\nEOF\n" |fdisk $DISK_NAME  >>/dev/null 2>&1
-	       #formatting swap
-	       mkswap ${DISK_NAME}1 >>/dev/null 2>&1
-	       echo "INFO: Create swap volume success..."
+               #formatting swap
+               mkswap ${DISK_NAME}1 >>/dev/null 2>&1
+               echo "INFO: Create swap volume success..."
                #Create Primary partition
                echo -ne "n\np\n2\n\n\nt\n2\n8e\nw\nEOF\n" |fdisk $DISK_NAME  >>/dev/null 2>&1
                #Create lvm and formatting
@@ -91,10 +91,12 @@ fi
 read -p "Do you want mount the disk, please input [y/n]:" ANSWER
 if [ "$ANSWER" = "y" ]; then
      sudo cp -f /etc/fstab /etc/fstab.bak
-     if [ "$MEM_STATUS" = "Swap" ]; then
+     if [ "$MEM_STATUS" -gt 0 ]; then
+	      sudo sed -i  's#'${DISK_NAME}1'#delete#;/delete/d' /etc/fstab
           sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
           echo -e "/dev/vg01/data          /data                   xfs     defaults    0 0" >> /etc/fstab
      else
+	      sudo sed -i  's#'${DISK_NAME}1'#delete#;/delete/d' /etc/fstab
           sudo sed -i  '\/dev\/$"{DISK_NAME}"1 /d' /etc/fstab
           sudo sed -i  '\/dev\/vg01\/data /d' /etc/fstab
           echo -e "/dev/${DISK_NAME}1               swap                    swap    defaults    0 0" >> /etc/fstab
@@ -120,8 +122,8 @@ fi
 
 #Add ssh Public DEVOPS_KEY.
 #devops
-if [ -d $SSH_DEVOPS ]; then
-     echo "the gamaxwin ssh public DEVOPS_KEY is already create..."  >>/dev/null 2>&1
+if [ -f $SSH_DEVOPS/authorized_keys ]; then
+     echo "The ssh authorized_keys  is already create..."  >>/dev/null 2>&1
      sudo sed -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
      sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" >> $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
@@ -129,7 +131,7 @@ if [ -d $SSH_DEVOPS ]; then
      sudo chmod 0600 $SSH_DEVOPS/authorized_keys
      echo ".........................................................................."
 else
-     sudo -u $USER_DEVOPS -H mkdir $SSH_DEVOPS
+     sudo -u $USER_DEVOPS -H touch $SSH_DEVOPS/authorized_keys
      sudo -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
      sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" > $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS

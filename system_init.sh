@@ -16,6 +16,7 @@ ETH0_IP=192.168.20.100
 ETH1_IP=10.10.10.100
 GATEWAY=192.168.20.1
 HOSTNAME=example.template.com
+SEARCH="search worker"
 NAMESERVER1=10.10.10.30
 NAMESERVER2=10.10.10.31 
 INTERFACE_NUM=$(ls /etc/sysconfig/network-scripts/ifcfg-e* | wc -l)
@@ -38,9 +39,10 @@ echo "INFO: Install basic tools successd of system ..."
 
 
 ######### basic configure of system #########
-
+sudo sed -i "/$SEARCH/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
+echo -e "$SEARCH"  >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
 sudo true > /etc/hostname
