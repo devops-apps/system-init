@@ -17,11 +17,13 @@ SRC_PORT=22
 DEST_PORT=60022
 USER_DEVOPS=devops
 SSH_DEVOPS=/home/${USER_DEVOPS}/.ssh
+SSH_KEY_EGREP=devops-user
 DATA=/data
 DISK_NAME=/dev/sdb
 DEVOPS_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnJ0UYNQYpRei2rtYNlbxcJhpOtvhnLPPyAMqo3gpQ2jGJ75ASlu1F1sID84qytgZi0KlQFngYTIh5Lsn7nAy/TT9stVwLOLC1P7b8YgXsfBUNhRcfC1RDasdAyHns+W3hxSHcSGS/hUA33T3sT3f/ltucl7telUSKOL+9p6AI7ckPMn2j9zKqLAaTDZKKUZ4gSSnnX9T7PQX91y94raynrS8HvKK6jBUmlWbYhALj1Zhfj840gmLxo8y91i5WvfieZ+DvjfH5Y89leSv8W5uVZC8PDkIw3aJ7YFvJZi4RIwFl2zKtDt4KhwIm9evfZfM4t9fuLCIHxrc4ZrJ+3asd devops-user"
 MEM_STATUS=$(free -m | grep Swap | awk -F " " '{print $2}')
 DISK_STATUS=$(ls -l ${DISK_NAME}* | wc -l)
+MATCH_FIELDS="centos/swap  rhgb"
 
 
 read -p "Initialize the system to the default state, the operation will lead to data loss,please make sure the operation? please input [y/n]:" STATE
@@ -124,15 +126,15 @@ fi
 #devops
 if [ -f $SSH_DEVOPS/authorized_keys ]; then
      echo "The ssh authorized_keys  is already create..."  >>/dev/null 2>&1
-     sudo sed -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
+     sudo sed -i "/$SSH_KEY_EGREP/d" $SSH_DEVOPS/authorized_keys
      sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" >> $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
      sudo chmod 0600 $SSH_DEVOPS/authorized_keys
      echo ".........................................................................."
 else
+     sudo -u $USER_DEVOPS -H mkdir $SSH_DEVOPS
      sudo -u $USER_DEVOPS -H touch $SSH_DEVOPS/authorized_keys
-     sudo -i "/devops-user/d" $SSH_DEVOPS/authorized_keys
      sudo -u $USER_DEVOPS -H echo -e "$DEVOPS_KEY" > $SSH_DEVOPS/authorized_keys
      sudo chown -R $USER_DEVOPS:$USER_DEVOPS $SSH_DEVOPS
      sudo chmod 0700 $SSH_DEVOPS
@@ -166,7 +168,7 @@ systemctl disable firewalld.service >>/dev/null 2>&1
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 setenforce 0 >>/dev/null 2>&1
 sudo sed -i "s:ipv6.disable=1::" /etc/sysconfig/grub 
-sed -i "s:centos/swap  rhgb:& ipv6.disable=1:" /etc/sysconfig/grub 
+sed -i "s:$MATCH_FIELDS:& ipv6.disable=1:" /etc/sysconfig/grub 
 grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 
 

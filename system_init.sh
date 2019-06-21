@@ -16,10 +16,10 @@ ETH0_IP=192.168.20.100
 ETH1_IP=10.10.10.100
 GATEWAY=192.168.20.1
 HOSTNAME=example.template.com
-SEARCH="search worker"
 NAMESERVER1=10.10.10.30
 NAMESERVER2=10.10.10.31 
 INTERFACE_NUM=$(ls /etc/sysconfig/network-scripts/ifcfg-e* | wc -l)
+MATCH_FIELDS="centos/swap  rhgb"
 
 
 [ `id -u` -ne 0  ] && echo "The user no permission exec the scripts, Please use root is exec it..." && exit 0
@@ -42,7 +42,6 @@ echo "INFO: Install basic tools successd of system ..."
 sudo sed -i "/$SEARCH/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER1/d"  /etc/resolv.conf
 sudo sed -i "/nameserver $NAMESERVER2/d"  /etc/resolv.conf
-echo -e "$SEARCH"  >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER1" >> /etc/resolv.conf
 echo -e "nameserver $NAMESERVER2" >> /etc/resolv.conf
 sudo true > /etc/hostname
@@ -66,7 +65,7 @@ if [ $INTERFACE_NUM == 1 ]; then
 ######### Change interface name for network #########
 sudo cp /etc/default/grub{,.bak}
 sudo sed -i "s:net.ifnames=0 biosdevname=0::" /etc/sysconfig/grub 
-sudo sed -i "s:centos/swap  rhgb:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
+sudo sed -i "s:$MATCH_FIELDS:& net.ifnames=0 biosdevname=0:" /etc/sysconfig/grub 
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg >>/dev/null 2>&1
 cd /etc/sysconfig/network-scripts/
 sudo mv $ETH0 ifcfg-eth0  >>/tmp/init.log 2>&1
